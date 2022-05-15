@@ -1,5 +1,10 @@
 <Project Sdk="Godot.NET.Sdk/3.3.0">
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
+    <LangVersion>8</LangVersion>
+    <RootNamespace>Gleisbelegung</RootNamespace>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="PubSub" Version="4.0.2" />
+  </ItemGroup>
 </Project>

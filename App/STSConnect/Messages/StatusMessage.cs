@@ -1,11 +1,11 @@
 using System.Xml.Serialization;
+using Gleisbelegung.App.STSConnect.Messages;
 
 namespace Gleisbelegung.App.STSConnect.Messages
 {
     [XmlRoot(ElementName = "status")]
-    public class StatusMessage
+    public class StatusMessage : IIncomingMessage, IOutgoingMessage
     {
-
         [XmlAttribute(AttributeName = "code")]
         public int Code { get; set; }
 

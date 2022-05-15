@@ -1,100 +1,126 @@
 
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Serialization;
+using System.Xml.Linq;
+using Gleisbelegung.App.Common;
 using Gleisbelegung.App.STSConnect.Messages;
 using Godot;
+using Gleisbelegung.App.STSConnect.Common;
+using System.Linq;
+using PubSub;
+using Gleisbelegung.App.STSConnect.MessageProcessors;
+using Gleisbelegung.App.Events;
 
 namespace Gleisbelegung.App.STSConnect
 {
     public class STSSocket
     {
+        private readonly int STS_PORT = 3691;
+        private readonly Socket socket;
+        private bool isQuitting = false;
+
+        Dictionary<string, Type> incomingMessagesMapper = new Dictionary<string, Type> {
+            { "status", typeof(StatusMessage) }
+        };
+
         public STSSocket()
         {
-            StartClientAsync();
+            socket = StartClientAsync();
+            DoWhatever();
         }
 
-        private void StartClientAsync()
+        private Socket StartClientAsync()
         {
-            byte[] bytes = new byte[1024];
+            // Connect to a Remote server
+            // Get Host IP Address that is used to establish a connection
+            // In this case, we get one IP address of localhost that is  IP : 127.0.0.1
+            // If a host has multiple addresses, you will get a list of addresses
+            IPHostEntry host = Dns.GetHostEntry("localhost");
+            IPAddress ipAddress = host.AddressList[0];
+            IPEndPoint remoteEndpoint = new IPEndPoint(ipAddress, STS_PORT);
 
+            // Create a TCP/IP  socket.
+            var socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+            socket.Connect(remoteEndpoint);
+            socket.Blocking = false;
+
+            return socket;
+        }
+
+        private void DoWhatever()
+        {
             try
             {
-                // Connect to a Remote server
-                // Get Host IP Address that is used to establish a connection
-                // In this case, we get one IP address of localhost that is  IP : 127.0.0.1
-                // If a host has multiple addresses, you will get a list of addresses
-                IPHostEntry host = Dns.GetHostEntry("localhost");
-                IPAddress ipAddress = host.AddressList[0];
-                IPEndPoint remoteEP = new IPEndPoint(ipAddress, 3691);
-
-                // Create a TCP/IP  socket.
-                Socket sender = new Socket(ipAddress.AddressFamily,
-                    SocketType.Stream, ProtocolType.Tcp);
-
-                // Connect the socket to the remote endpoint. Catch any errors.
-                try
+                var task = Task.Run(async () =>
                 {
-                    // Connect to Remote EndPoint
-                    sender.Connect(remoteEP);
-
-                    GD.Print("Socket connected to ",
-                        sender.RemoteEndPoint.ToString());
-
-                    var task = Task.Run(async () =>  // <- marked async
+                    while (true)
                     {
-                        while (true)
-                        {
-                            // DoWork();
-                            await Task.Delay(10000); // <- await with cancellation
-                            GD.Print("After pause");
-                        }
-                    });
-
-                    // Encode the data string into a byte array.
-                    byte[] msg = Encoding.ASCII.GetBytes("This is a test<EOF>");
-
-                    // Send the data through the socket.
-                    int bytesSent = sender.Send(msg);
-
-                    // Receive the response from the remote device.
-                    int bytesRec = sender.Receive(bytes);
-                    var data = Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                    GD.Print("Echoed test = ", data);
-
-                    XmlSerializer serializer = new XmlSerializer(typeof(StatusMessage));
-                    using (StringReader reader = new StringReader(data))
-                    {
-                        var test = (StatusMessage)serializer.Deserialize(reader);
+                        await Task.Delay(1000);
+                        GD.Print("After pause");
+                        ReadMessage();
                     }
-
-                    // Release the socket.
-                    sender.Shutdown(SocketShutdown.Both);
-                    sender.Close();
-
-                }
-                catch (ArgumentNullException ane)
-                {
-                    GD.Print("ArgumentNullException : {0}", ane.ToString());
-                }
-                catch (SocketException se)
-                {
-                    GD.Print("SocketException : {0}", se.ToString());
-                }
-                catch (Exception e)
-                {
-                    GD.Print("Unexpected exception : {0}", e.ToString());
-                }
+                });
 
             }
             catch (Exception e)
             {
                 GD.Print(e.ToString());
             }
+        }
+
+        private void ReadMessage()
+        {
+            try
+            {
+                if (socket.Available > 0)
+                {
+                    byte[] bytes = new byte[socket.Available];
+                    int bytesRec = socket.Receive(bytes);
+                    var data = Encoding.ASCII.GetString(bytes, 0, bytesRec);
+
+                    XElement element = XElement.Parse(data);
+                    ProcessMessage(element.Name.ToString(), data);
+                }
+            }
+            catch (System.Exception e)
+            {
+                GD.Print(e.ToString());
+            }
+        }
+
+        private void ProcessMessage(string elementName, string data)
+        {
+            if (!incomingMessagesMapper.ContainsKey(elementName))
+            {
+                throw new PluginException($"No message handler for {elementName}");
+
+            }
+
+            var type = incomingMessagesMapper[elementName];
+            var message = XMLHelper.Deserialize(type, data);
+
+            switch (message)
+            {
+                case StatusMessage typedMessage:
+                    Hub.Default.Publish(new IncomingMessageEvent<StatusMessage>(typedMessage));
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public void SendMessage(IOutgoingMessage outgoingMessage)
+        {
+            if (!socket.Connected)
+            {
+                throw new PluginException("Could not write message, because socket is not connected");
+            }
+
+            socket.Send(Encoding.ASCII.GetBytes(XMLHelper.SerializeAsXml(outgoingMessage)));
         }
     }
 }

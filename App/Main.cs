@@ -1,31 +1,34 @@
+using System;
+using System.Linq;
+using Gleisbelegung.App.Common;
 using Gleisbelegung.App.STSConnect;
 using Godot;
-using System;
-using System;
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
 
 public class Main : Node
 {
-    // Declare member variables here. Examples:
-    // private int a = 2;
-    // private string b = "text";
 
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
-    {
-        var stsSocket = new STSSocket();
+	private STSSocket stsSocket;
 
-        GD.Print("Hello World!");
-    }
+	public override void _Ready()
+	{
 
+		var interfaceType = typeof(IEventListener);
+		var all = AppDomain.CurrentDomain.GetAssemblies()
+		  .SelectMany(x => x.GetTypes())
+		  .Where(x => interfaceType.IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
+		  .Select(x => Activator.CreateInstance(x))
+		  .ToList();
 
+		stsSocket = new STSSocket();
 
-    //  // Called every frame. 'delta' is the elapsed time since the previous frame.
-    //  public override void _Process(float delta)
-    //  {
-    //      
-    //  }
+		GD.Print("Hello World!");
+	}
+
+	public override void _Notification(int what)
+	{
+		if (what == MainLoop.NotificationWmQuitRequest || what == MainLoop.NotificationWmGoBackRequest)
+		{
+			GD.Print("Quitting");
+		}
+	}
 }
