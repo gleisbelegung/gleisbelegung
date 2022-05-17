@@ -1,34 +1,62 @@
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Gleisbelegung.App.Common;
+using Gleisbelegung.App.Events;
 using Gleisbelegung.App.STSConnect;
+using Gleisbelegung.App.STSConnect.MessageProcessors;
+using Gleisbelegung.App.STSConnect.Messages;
 using Godot;
 
-public class Main : Node
+public class Main : Node, IEventListener<ConnectionStatusEvent>
 {
 
-	private STSSocket stsSocket;
+    private STSSocket stsSocket;
 
-	public override void _Ready()
-	{
+    public override void _Ready()
+    {
+        SubscribeToEvents();
 
-		var interfaceType = typeof(IEventListener);
-		var all = AppDomain.CurrentDomain.GetAssemblies()
-		  .SelectMany(x => x.GetTypes())
-		  .Where(x => interfaceType.IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
-		  .Select(x => Activator.CreateInstance(x))
-		  .ToList();
+        // auto initialize all message processors
+        var interfaceType = typeof(IMessageProcessor);
+        var all = AppDomain.CurrentDomain.GetAssemblies()
+          .SelectMany(x => x.GetTypes())
+          .Where(x => interfaceType.IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
+          .Select(x => Activator.CreateInstance(x))
+          .ToList();
 
-		stsSocket = new STSSocket();
+        stsSocket = new STSSocket();
 
-		GD.Print("Hello World!");
-	}
+        GD.Print("Hello World!");
+    }
 
-	public override void _Notification(int what)
-	{
-		if (what == MainLoop.NotificationWmQuitRequest || what == MainLoop.NotificationWmGoBackRequest)
-		{
-			GD.Print("Quitting");
-		}
-	}
+    public override void _Notification(int what)
+    {
+        if (what == MainLoop.NotificationWmQuitRequest || what == MainLoop.NotificationWmGoBackRequest)
+        {
+            GD.Print("Quitting");
+        }
+    }
+
+    public void SubscribeToEvents()
+    {
+        EventHub.Subscribe<ConnectionStatusEvent>(ProcessEvent);
+    }
+
+    public void ProcessEvent(ConnectionStatusEvent eventData)
+    {
+        if (eventData.ConnectionStatus == ConnectionStatus.REGISTERED)
+        {
+            StartFetchingData();
+        }
+    }
+
+    private void StartFetchingData()
+    {
+        EventHub.Publish(new ConnectionStatusEvent(ConnectionStatus.FETCHING_INITIAL_DATA));
+        EventHub.Publish(new SendMessageEvent(new FacilityInfoMessage()));
+        // Task.Delay(6000).Wait();
+
+        // EventHub.Publish(new SendMessageEvent(new PlatformListMessage()));
+    }
 }

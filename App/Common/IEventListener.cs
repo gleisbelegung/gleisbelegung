@@ -1,12 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Gleisbelegung.App.Events;
+using PubSub;
 
 namespace Gleisbelegung.App.Common
 {
-    public interface IEventListener
+    public interface IEventListener<T> where T : IEvent
     {
-        
+        void SubscribeToEvents();
+        void ProcessEvent(T eventData);
     }
 }

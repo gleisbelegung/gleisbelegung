@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://Themes/DefaultTheme.tres" type="Theme" id=1]
 [ext_resource path="res://Resources/Gleisbelegung.png" type="Texture" id=2]
+[ext_resource path="res://App/Components/ConnectionStatusLabel.cs" type="Script" id=3]
 
 [node name="TopMenu" type="Panel"]
 anchor_right = 1.0
@@ -46,10 +47,17 @@ margin_bottom = 26.0
 alignment = 1
 
 [node name="Button" type="Button" parent="Control/TopCenter"]
-margin_left = 147.0
-margin_right = 186.0
+margin_left = 145.0
+margin_right = 184.0
 margin_bottom = 26.0
 text = "test"
+
+[node name="ConnectionStatus" type="Label" parent="Control/TopCenter"]
+margin_left = 188.0
+margin_top = 6.0
+margin_right = 188.0
+margin_bottom = 20.0
+script = ExtResource( 3 )
 
 [node name="TopRight" type="HBoxContainer" parent="Control"]
 anchor_left = 0.66

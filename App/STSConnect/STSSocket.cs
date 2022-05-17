@@ -7,46 +7,45 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Gleisbelegung.App.Common;
+using Gleisbelegung.App.Events;
+using Gleisbelegung.App.STSConnect.Common;
 using Gleisbelegung.App.STSConnect.Messages;
 using Godot;
-using Gleisbelegung.App.STSConnect.Common;
-using System.Linq;
-using PubSub;
-using Gleisbelegung.App.STSConnect.MessageProcessors;
-using Gleisbelegung.App.Events;
 
 namespace Gleisbelegung.App.STSConnect
 {
-    public class STSSocket
+    public class STSSocket : IEventListener<SendMessageEvent>
     {
         private readonly int STS_PORT = 3691;
         private readonly Socket socket;
         private bool isQuitting = false;
 
         Dictionary<string, Type> incomingMessagesMapper = new Dictionary<string, Type> {
-            { "status", typeof(StatusMessage) }
+            { "status", typeof(StatusMessage) },
+            { "anlageninfo", typeof(FacilityInfoMessage) },
+            { "bahnsteigliste", typeof(PlatformListMessage) }
         };
 
         public STSSocket()
         {
             socket = StartClientAsync();
+            SubscribeToEvents();
             DoWhatever();
         }
 
         private Socket StartClientAsync()
         {
-            // Connect to a Remote server
-            // Get Host IP Address that is used to establish a connection
-            // In this case, we get one IP address of localhost that is  IP : 127.0.0.1
-            // If a host has multiple addresses, you will get a list of addresses
+            EventHub.Publish(new ConnectionStatusEvent(ConnectionStatus.CONNECTING));
+
             IPHostEntry host = Dns.GetHostEntry("localhost");
             IPAddress ipAddress = host.AddressList[0];
             IPEndPoint remoteEndpoint = new IPEndPoint(ipAddress, STS_PORT);
 
-            // Create a TCP/IP  socket.
             var socket = new Socket(ipAddress.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
             socket.Connect(remoteEndpoint);
             socket.Blocking = false;
+
+            EventHub.Publish(new ConnectionStatusEvent(ConnectionStatus.CONNECTED));
 
             return socket;
         }
@@ -81,6 +80,7 @@ namespace Gleisbelegung.App.STSConnect
                     byte[] bytes = new byte[socket.Available];
                     int bytesRec = socket.Receive(bytes);
                     var data = Encoding.ASCII.GetString(bytes, 0, bytesRec);
+                    GD.Print(data);
 
                     XElement element = XElement.Parse(data);
                     ProcessMessage(element.Name.ToString(), data);
@@ -97,7 +97,6 @@ namespace Gleisbelegung.App.STSConnect
             if (!incomingMessagesMapper.ContainsKey(elementName))
             {
                 throw new PluginException($"No message handler for {elementName}");
-
             }
 
             var type = incomingMessagesMapper[elementName];
@@ -106,7 +105,13 @@ namespace Gleisbelegung.App.STSConnect
             switch (message)
             {
                 case StatusMessage typedMessage:
-                    Hub.Default.Publish(new IncomingMessageEvent<StatusMessage>(typedMessage));
+                    EventHub.Publish(new IncomingMessageEvent<StatusMessage>(typedMessage));
+                    break;
+                case FacilityInfoMessage typedMessage:
+                    EventHub.Publish(new IncomingMessageEvent<FacilityInfoMessage>(typedMessage));
+                    break;
+                case PlatformListMessage typedMessage:
+                    EventHub.Publish(new IncomingMessageEvent<PlatformListMessage>(typedMessage));
                     break;
                 default:
                     throw new NotImplementedException();
@@ -120,7 +125,17 @@ namespace Gleisbelegung.App.STSConnect
                 throw new PluginException("Could not write message, because socket is not connected");
             }
 
-            socket.Send(Encoding.ASCII.GetBytes(XMLHelper.SerializeAsXml(outgoingMessage)));
+            socket.Send(Encoding.ASCII.GetBytes(XMLHelper.Serialize(outgoingMessage) + "\n"));
+        }
+
+        public void SubscribeToEvents()
+        {
+            EventHub.Subscribe<SendMessageEvent>(ProcessEvent);
+        }
+
+        public void ProcessEvent(SendMessageEvent eventData)
+        {
+            SendMessage(eventData.Message);
         }
     }
 }

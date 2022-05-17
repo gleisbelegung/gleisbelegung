@@ -3,11 +3,11 @@ using Gleisbelegung.App.STSConnect.Messages;
 
 namespace Gleisbelegung.App.Events
 {
-    public class IncomingMessageEvent<T> : IEvent where T : IIncomingMessage
+    public class SendMessageEvent : IEvent
     {
-        public T Message { get; }
+        public readonly IOutgoingMessage Message;
 
-        public IncomingMessageEvent(T message)
+        public SendMessageEvent(IOutgoingMessage message)
         {
             Message = message;
         }

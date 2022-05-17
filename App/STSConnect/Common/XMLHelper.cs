@@ -1,6 +1,7 @@
 using System;
 using System.CodeDom;
 using System.IO;
+using System.Xml;
 using System.Xml.Serialization;
 using Gleisbelegung.App.STSConnect.Messages;
 
@@ -17,13 +18,19 @@ namespace Gleisbelegung.App.STSConnect.Common
             }
         }
 
-        public static string SerializeAsXml(IOutgoingMessage outgoingMessage)
+        public static string Serialize(IOutgoingMessage outgoingMessage)
         {
-            XmlSerializer serializer = new XmlSerializer(outgoingMessage.GetType());
-            using (StringWriter writer = new StringWriter())
+            var emptyNamespaces = new XmlSerializerNamespaces(new[] { XmlQualifiedName.Empty });
+            var settings = new XmlWriterSettings();
+            settings.Indent = true;
+            settings.OmitXmlDeclaration = true;
+            var serializer = new XmlSerializer(outgoingMessage.GetType());
+
+            using (var stream = new StringWriter())
+            using (var writer = XmlWriter.Create(stream, settings))
             {
-                serializer.Serialize(writer, outgoingMessage);
-                return writer.ToString();
+                serializer.Serialize(writer, outgoingMessage, emptyNamespaces);
+                return stream.ToString();
             }
         }
     }
