@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Scenes/common/TopMenu.tscn" type="PackedScene" id=1]
 [ext_resource path="res://App/Main.cs" type="Script" id=2]
 [ext_resource path="res://Themes/DefaultTheme.tres" type="Theme" id=3]
+[ext_resource path="res://App/Components/EventLog.cs" type="Script" id=4]
 
 [node name="Spatial" type="Node"]
 script = ExtResource( 2 )
@@ -19,3 +20,10 @@ margin_top = 62.0
 margin_right = 70.0
 margin_bottom = 82.0
 text = "asd"
+
+[node name="EventLog" type="Label" parent="."]
+margin_left = 27.0
+margin_top = 108.0
+margin_right = 67.0
+margin_bottom = 122.0
+script = ExtResource( 4 )

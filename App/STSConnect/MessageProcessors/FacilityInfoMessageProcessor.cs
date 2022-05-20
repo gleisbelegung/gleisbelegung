@@ -13,7 +13,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
 
         public void ProcessEvent(IncomingMessageEvent<FacilityInfoMessage> eventData)
         {
-            EventHub.Publish(new SendMessageEvent(new PlatformListMessage()));
+            // EventHub.Publish(new SendMessageEvent(new PlatformListMessage()));
 
         }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Gleisbelegung.App.Common;
@@ -23,7 +24,11 @@ namespace Gleisbelegung.App.STSConnect
         Dictionary<string, Type> incomingMessagesMapper = new Dictionary<string, Type> {
             { "status", typeof(StatusMessage) },
             { "anlageninfo", typeof(FacilityInfoMessage) },
-            { "bahnsteigliste", typeof(PlatformListMessage) }
+            { "bahnsteigliste", typeof(PlatformListMessage) },
+            { "zugliste", typeof(TrainListMessage) },
+            { "wege", typeof(FacilityPathMessage) },
+            { "simzeit", typeof(TimeMessage) },
+            { "ereignis", typeof(TrainEventMessage) }
         };
 
         public STSSocket()
@@ -79,11 +84,28 @@ namespace Gleisbelegung.App.STSConnect
                 {
                     byte[] bytes = new byte[socket.Available];
                     int bytesRec = socket.Receive(bytes);
-                    var data = Encoding.ASCII.GetString(bytes, 0, bytesRec);
-                    GD.Print(data);
+                    var data = Encoding.UTF8.GetString(bytes, 0, bytesRec);
 
-                    XElement element = XElement.Parse(data);
-                    ProcessMessage(element.Name.ToString(), data);
+
+                    var perLine = data.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
+                    var currentMessage = string.Empty;
+                    var count = 0;
+
+                    foreach (var line in perLine)
+                    {
+                        var openingTags = Regex.Matches(line, "<(?!/)(.*)>").Count; // all opening tags
+                        var closingTags = Regex.Matches(line, "</.*>").Count + Regex.Matches(line, "<.*/>").Count; // all closing tags and self closing tags
+                        count += openingTags - closingTags;
+                        currentMessage += line;
+
+                        if (count == 0)
+                        {
+                            XElement element = XElement.Parse(currentMessage);
+                            ProcessMessage(element.Name.ToString(), currentMessage);
+
+                            currentMessage = string.Empty;
+                        }
+                    }
                 }
             }
             catch (System.Exception e)
@@ -113,6 +135,18 @@ namespace Gleisbelegung.App.STSConnect
                 case PlatformListMessage typedMessage:
                     EventHub.Publish(new IncomingMessageEvent<PlatformListMessage>(typedMessage));
                     break;
+                case TrainListMessage typedMessage:
+                    EventHub.Publish(new IncomingMessageEvent<TrainListMessage>(typedMessage));
+                    break;
+                case FacilityPathMessage typedMessage:
+                    EventHub.Publish(new IncomingMessageEvent<FacilityPathMessage>(typedMessage));
+                    break;
+                case TimeMessage typedMessage:
+                    EventHub.Publish(new IncomingMessageEvent<TimeMessage>(typedMessage));
+                    break;
+                case TrainEventMessage typedMessage:
+                    EventHub.Publish(new IncomingMessageEvent<TrainEventMessage>(typedMessage));
+                    break;
                 default:
                     throw new NotImplementedException();
             }
@@ -125,7 +159,7 @@ namespace Gleisbelegung.App.STSConnect
                 throw new PluginException("Could not write message, because socket is not connected");
             }
 
-            socket.Send(Encoding.ASCII.GetBytes(XMLHelper.Serialize(outgoingMessage) + "\n"));
+            socket.Send(Encoding.UTF8.GetBytes(XMLHelper.Serialize(outgoingMessage) + "\n"));
         }
 
         public void SubscribeToEvents()

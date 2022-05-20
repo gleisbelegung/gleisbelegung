@@ -55,8 +55,10 @@ public class Main : Node, IEventListener<ConnectionStatusEvent>
     {
         EventHub.Publish(new ConnectionStatusEvent(ConnectionStatus.FETCHING_INITIAL_DATA));
         EventHub.Publish(new SendMessageEvent(new FacilityInfoMessage()));
-        // Task.Delay(6000).Wait();
+        EventHub.Publish(new SendMessageEvent(new PlatformListMessage()));
+        EventHub.Publish(new SendMessageEvent(new TrainListMessage()));
+        EventHub.Publish(new SendMessageEvent(new FacilityPathMessage()));
+        EventHub.Publish<SendMessageEvent>(new SendMessageEvent(TimeMessageProcessor.CreateTimeMessage()));
 
-        // EventHub.Publish(new SendMessageEvent(new PlatformListMessage()));
     }
 }

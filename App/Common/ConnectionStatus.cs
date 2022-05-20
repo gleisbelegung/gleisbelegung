@@ -7,5 +7,6 @@ namespace Gleisbelegung.App.Common
         REGISTERING,
         REGISTERED,
         FETCHING_INITIAL_DATA,
+        ESTABLISHED,
     }
 }
