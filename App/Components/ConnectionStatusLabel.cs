@@ -6,12 +6,7 @@ public class ConnectionStatusLabel : Label, IEventListener<ConnectionStatusEvent
 {
     public override void _Ready()
     {
-        SubscribeToEvents();
-    }
-
-    public void SubscribeToEvents()
-    {
-        EventHub.Subscribe<ConnectionStatusEvent>(ProcessEvent);
+        this.RegisterSubscriptions();
     }
 
     public void ProcessEvent(ConnectionStatusEvent eventData)

@@ -15,7 +15,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
 
         public TimeMessageProcessor()
         {
-            SubscribeToEvents();
+            this.RegisterSubscriptions();
         }
 
         public void ProcessEvent(IncomingMessageEvent<TimeMessage> eventData)
@@ -48,11 +48,6 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
                    }
                });
             }
-        }
-
-        public void SubscribeToEvents()
-        {
-            EventHub.Subscribe<IncomingMessageEvent<TimeMessage>>(ProcessEvent);
         }
 
         public static TimeMessage CreateTimeMessage()

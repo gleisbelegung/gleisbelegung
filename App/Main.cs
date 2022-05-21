@@ -10,24 +10,16 @@ using Godot;
 
 public class Main : Node, IEventListener<ConnectionStatusEvent>
 {
-
     private STSSocket stsSocket;
 
     public override void _Ready()
     {
-        SubscribeToEvents();
+        this.RegisterSubscriptions();
 
         // auto initialize all message processors
-        var interfaceType = typeof(IMessageProcessor);
-        var all = AppDomain.CurrentDomain.GetAssemblies()
-          .SelectMany(x => x.GetTypes())
-          .Where(x => interfaceType.IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
-          .Select(x => Activator.CreateInstance(x))
-          .ToList();
+        ReflectionHelper.CreateInstancesByInterface<IMessageProcessor>();
 
         stsSocket = new STSSocket();
-
-        GD.Print("Hello World!");
     }
 
     public override void _Notification(int what)
@@ -36,11 +28,6 @@ public class Main : Node, IEventListener<ConnectionStatusEvent>
         {
             GD.Print("Quitting");
         }
-    }
-
-    public void SubscribeToEvents()
-    {
-        EventHub.Subscribe<ConnectionStatusEvent>(ProcessEvent);
     }
 
     public void ProcessEvent(ConnectionStatusEvent eventData)

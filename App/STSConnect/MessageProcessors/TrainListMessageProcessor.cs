@@ -1,3 +1,4 @@
+using System;
 using Gleisbelegung.App.Common;
 using Gleisbelegung.App.Data;
 using Gleisbelegung.App.Events;
@@ -10,34 +11,48 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
     {
         public TrainListMessageProcessor()
         {
-            SubscribeToEvents();
+            this.RegisterSubscriptions();
         }
 
         public void ProcessEvent(IncomingMessageEvent<TrainListMessage> eventData)
         {
             foreach (var trainData in eventData.Message.Trains)
             {
-                var train = new Train
+                ProcessTrainData(trainData);
+            }
+        }
+
+        private void ProcessTrainData(TrainListMessage.Train trainData)
+        {
+            var database = Database.GetInstance();
+            if (!database.Trains.ContainsKey(trainData.Zid))
+            {
+                var newTrain = new Train
                 {
                     Id = trainData.Zid,
                     Name = trainData.Name,
                 };
-                EventHub.Publish<NewTrainInformationAvailable>(new NewTrainInformationAvailable { Train = train });
+                database.Trains.Add(newTrain.Id, newTrain);
+                EventHub.Publish<NewTrainInformationAvailable>(new NewTrainInformationAvailable { Train = newTrain });
 
-                foreach (var trainEvent in TrainEventType.AllTrainEvents)
-                {
-                    EventHub.Publish<SendMessageEvent>(new SendMessageEvent(new TrainEventMessage
-                    {
-                        Art = trainEvent.EventName,
-                        Zid = train.Id,
-                    }));
-                }
+                RegisterTrainEvents(newTrain);
             }
+
+            var train = database.Trains[trainData.Zid];
+            // do whatever / update the train
+
         }
 
-        public void SubscribeToEvents()
+        private void RegisterTrainEvents(Train newTrain)
         {
-            EventHub.Subscribe<IncomingMessageEvent<TrainListMessage>>(ProcessEvent);
+            foreach (var trainEvent in TrainEventType.AllTrainEvents)
+            {
+                EventHub.Publish<SendMessageEvent>(new SendMessageEvent(new TrainEventMessage
+                {
+                    Art = trainEvent.EventName,
+                    Zid = newTrain.Id,
+                }));
+            }
         }
     }
 }

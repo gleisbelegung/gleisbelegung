@@ -10,7 +10,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
     {
         public TrainEventMessageProcessor()
         {
-            SubscribeToEvents();
+            this.RegisterSubscriptions();
         }
 
         public void ProcessEvent(IncomingMessageEvent<TrainEventMessage> eventData)
@@ -27,17 +27,14 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
                 }
             }
 
+            var database = Database.GetInstance();
+            var train = database.Trains[data.Zid];
 
             EventHub.Publish<TrainEvent>(new TrainEvent
             {
-                // Train = data.Zid,
+                Train = train,
                 Type = eventType,
             });
-        }
-
-        public void SubscribeToEvents()
-        {
-            EventHub.Subscribe<IncomingMessageEvent<TrainEventMessage>>(ProcessEvent);
         }
     }
 }

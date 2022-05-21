@@ -7,7 +7,7 @@ public class EventLog : Label, IEventListener<NewTrainInformationAvailable>, IEv
 {
     public EventLog()
     {
-        SubscribeToEvents();
+        this.RegisterSubscriptions();
     }
 
     public void ProcessEvent(NewTrainInformationAvailable eventData)
@@ -19,37 +19,31 @@ public class EventLog : Label, IEventListener<NewTrainInformationAvailable>, IEv
     {
         if (eventData.Type == TrainEventType.Incoming)
         {
-            // Text += "Train arrived at facility\n";
+            // Text += $"Train {eventData.Train.Name} arrived at facility\n";
         }
         else if (eventData.Type == TrainEventType.Arrival)
         {
-            Text += "Train arrived at a platform\n";
+            Text += $"Train {eventData.Train.Name} arrived at a platform\n";
         }
         else if (eventData.Type == TrainEventType.Departure)
         {
-            // Text += "Train departed at a platform\n";
+            // Text += $"Train {eventData.Train.Name} ready to depart at a platform\n";
         }
         else if (eventData.Type == TrainEventType.RedSignal)
         {
-            Text += "Train has a red signal\n";
+            Text += $"Train {eventData.Train.Name} has a red signal\n";
         }
         else if (eventData.Type == TrainEventType.BecameGreen)
         {
-            Text += "Train became green\n";
+            Text += $"Train {eventData.Train.Name} became green\n";
         }
         else if (eventData.Type == TrainEventType.Couple)
         {
-            Text += "Train coupled\n";
+            Text += $"Train {eventData.Train.Name} coupled\n";
         }
         else if (eventData.Type == TrainEventType.Wing)
         {
-            Text += "Train winged\n";
+            Text += $"Train {eventData.Train.Name} winged\n";
         }
-    }
-
-    public void SubscribeToEvents()
-    {
-        EventHub.Subscribe<NewTrainInformationAvailable>(ProcessEvent);
-        EventHub.Subscribe<TrainEvent>(ProcessEvent);
     }
 }

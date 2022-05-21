@@ -3,9 +3,8 @@ using PubSub;
 
 namespace Gleisbelegung.App.Common
 {
-    public interface IEventListener<T> where T : IEvent
+    public interface IEventListener<T> : INonGenericEventListener where T : IEvent
     {
-        void SubscribeToEvents();
         void ProcessEvent(T eventData);
     }
 }

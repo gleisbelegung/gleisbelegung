@@ -4,15 +4,16 @@ using Gleisbelegung.App.STSConnect.Messages;
 
 namespace Gleisbelegung.App.STSConnect.MessageProcessors
 {
-    public class FacilityPathMessageProcessor : IMessageProcessor, IEventListener<IncomingMessageEvent<FacilityPathMessage>>
+    public class TrainDetailsMessageProcessor : IMessageProcessor, IEventListener<IncomingMessageEvent<TrainDetailsMessage>>
     {
-        public FacilityPathMessageProcessor()
+        public TrainDetailsMessageProcessor()
         {
             this.RegisterSubscriptions();
         }
 
-        public void ProcessEvent(IncomingMessageEvent<FacilityPathMessage> eventData)
+        public void ProcessEvent(IncomingMessageEvent<TrainDetailsMessage> eventData)
         {
+
 
         }
     }

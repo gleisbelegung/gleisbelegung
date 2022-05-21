@@ -8,12 +8,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
     {
         public StatusMessageProcessor()
         {
-            SubscribeToEvents();
-        }
-
-        public void SubscribeToEvents()
-        {
-            EventHub.Subscribe<IncomingMessageEvent<StatusMessage>>(ProcessEvent);
+            this.RegisterSubscriptions();
         }
 
         public void ProcessEvent(IncomingMessageEvent<StatusMessage> eventData)

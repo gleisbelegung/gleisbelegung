@@ -1,20 +1,30 @@
 using System;
+using System.Collections.Generic;
+using Gleisbelegung.App.Common;
 using Gleisbelegung.App.Extensions;
 using Godot;
-using PubSub;
+// using PubSub;
 
 namespace Gleisbelegung.App.Events
 {
     public static class EventHub
     {
-        public static void Subscribe<T>(Action<T> handler)
+        public static void RegisterSubscriptions(object instance)
         {
-            GD.Print($"{DateTime.Now.ToLogTime()} EventHub.RegisterSubscribe: {typeof(T).Name}");
-            Hub.Default.Subscribe<T>((eventData) =>
+            // var temp = (IEventListener<>)instance;
+            var instanceType = instance.GetType();
+            var types = ReflectionHelper.GetListOfGenericInterfaceTypes(instanceType, typeof(IEventListener<>));
+            foreach (var t in types)
             {
-                GD.Print($"{DateTime.Now.ToLogTime()} EventHub.Subscribe: {eventData.GetType().Name}");
-                handler(eventData);
-            });
+                var methodInfo = instanceType.GetMethod("ProcessEvent", new[] { t });
+
+                GD.Print($"{DateTime.Now.ToLogTime()} EventHub.RegisterSubscribe: {t.Name}");
+                Hub.Default.Subscribe(t, (data) =>
+                {
+                    GD.Print($"{DateTime.Now.ToLogTime()} EventHub.Subscribe: {data.GetType().Name}");
+                    methodInfo.Invoke(instance, new[] { data });
+                });
+            }
         }
 
         public static void Publish<T>(T eventData)

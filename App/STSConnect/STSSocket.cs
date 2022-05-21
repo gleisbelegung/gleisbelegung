@@ -33,8 +33,9 @@ namespace Gleisbelegung.App.STSConnect
 
         public STSSocket()
         {
+            this.RegisterSubscriptions();
+
             socket = StartClientAsync();
-            SubscribeToEvents();
             DoWhatever();
         }
 
@@ -160,11 +161,6 @@ namespace Gleisbelegung.App.STSConnect
             }
 
             socket.Send(Encoding.UTF8.GetBytes(XMLHelper.Serialize(outgoingMessage) + "\n"));
-        }
-
-        public void SubscribeToEvents()
-        {
-            EventHub.Subscribe<SendMessageEvent>(ProcessEvent);
         }
 
         public void ProcessEvent(SendMessageEvent eventData)

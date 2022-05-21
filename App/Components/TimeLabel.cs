@@ -7,16 +7,11 @@ public class TimeLabel : Label, IEventListener<TimeUpdatedEvent>
 {
     public TimeLabel()
     {
-        SubscribeToEvents();
+        this.RegisterSubscriptions();
     }
 
     public void ProcessEvent(TimeUpdatedEvent eventData)
     {
-        Text = eventData.Time.ToString("HH:mm:ss");
-    }
-
-    public void SubscribeToEvents()
-    {
-        EventHub.Subscribe<TimeUpdatedEvent>(ProcessEvent);
+        Text = eventData.Time.ToString("HH:mm:ss") + " " + Engine.GetFramesPerSecond() + "FPS";
     }
 }

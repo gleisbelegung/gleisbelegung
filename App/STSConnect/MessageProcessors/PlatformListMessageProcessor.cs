@@ -13,17 +13,12 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
     {
         public PlatformListMessageProcessor()
         {
-            SubscribeToEvents();
+            this.RegisterSubscriptions();
         }
 
         public void ProcessEvent(IncomingMessageEvent<PlatformListMessage> eventData)
         {
 
-        }
-
-        public void SubscribeToEvents()
-        {
-            EventHub.Subscribe<IncomingMessageEvent<PlatformListMessage>>(ProcessEvent);
         }
     }
 }
