@@ -9,12 +9,12 @@ namespace Gleisbelegung.App.STSConnect.Common
 {
     public static class XMLHelper
     {
-        public static IIncomingMessage Deserialize(Type type, string message)
+        public static T Deserialize<T>(string message)
         {
-            XmlSerializer serializer = new XmlSerializer(type);
+            XmlSerializer serializer = new XmlSerializer(typeof(T));
             using (StringReader reader = new StringReader(message))
             {
-                return (IIncomingMessage)serializer.Deserialize(reader);
+                return (T)serializer.Deserialize(reader);
             }
         }
 
