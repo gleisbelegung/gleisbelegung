@@ -22,7 +22,7 @@ namespace Gleisbelegung.App.STSConnect.Messages
         {
 
             [XmlElement(ElementName = "n")]
-            public List<N> N { get; set; }
+            public List<N> Nachbarn { get; set; }
 
             [XmlAttribute(AttributeName = "name")]
             public string Name { get; set; }

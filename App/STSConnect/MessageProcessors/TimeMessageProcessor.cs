@@ -20,10 +20,12 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
 
         public void ProcessEvent(IncomingMessageEvent<TimeMessage> eventData)
         {
-            var roundTime = (int)(DateTime.Now - DateTime.Today).TotalMilliseconds - eventData.Message.Sender;
+            var roundTime = GetTodaysTime() - eventData.Message.Sender;
             var time = eventData.Message.Zeit + roundTime / 2;
 
             simTime = DateTime.Today.Add(TimeSpan.FromMilliseconds(time));
+            var database = Database.GetInstance();
+            database.Time = simTime;
 
             if (isFirstUpdate)
             {
@@ -36,6 +38,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
                    {
                        await Task.Delay(1000);
                        simTime = simTime.Add(TimeSpan.FromSeconds(1));
+                       database.Time = simTime;
                        EventHub.Publish(new TimeUpdatedEvent(simTime));
 
                        forceRefreshCount++;
@@ -53,8 +56,13 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
         public static TimeMessage CreateTimeMessage()
         {
             var timeMessage = new TimeMessage();
-            timeMessage.Sender = (int)(DateTime.Now - DateTime.Today).TotalMilliseconds;
+            timeMessage.Sender = GetTodaysTime(); ;
             return timeMessage;
+        }
+
+        private static int GetTodaysTime()
+        {
+            return (int)(DateTime.Now - DateTime.Today).TotalMilliseconds;
         }
     }
 }

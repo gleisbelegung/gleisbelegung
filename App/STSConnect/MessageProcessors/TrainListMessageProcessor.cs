@@ -1,4 +1,5 @@
 using System;
+using System.Drawing.Text;
 using Gleisbelegung.App.Common;
 using Gleisbelegung.App.Data;
 using Gleisbelegung.App.Events;
@@ -20,6 +21,22 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
             {
                 ProcessTrainData(trainData);
             }
+
+            RequestTrainDetails();
+        }
+
+        private void RequestTrainDetails()
+        {
+            var database = Database.GetInstance();
+            var trains = database.Trains;
+
+            foreach (var trainKeyValue in trains)
+            {
+                var train = trainKeyValue.Value;
+
+                EventHub.Publish(new SendMessageEvent(new TrainDetailsMessage { Zid = train.Id }));
+                EventHub.Publish(new SendMessageEvent(new TrainScheduleMessage { Zid = train.Id }));
+            }
         }
 
         private void ProcessTrainData(TrainListMessage.Train trainData)
@@ -39,8 +56,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
             }
 
             var train = database.Trains[trainData.Zid];
-            // do whatever / update the train
-
+            train.Name = trainData.Name;
         }
 
         private void RegisterTrainEvents(Train newTrain)
