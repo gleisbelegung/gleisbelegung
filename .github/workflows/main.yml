@@ -1,10 +1,7 @@
 on:
   push:
     branches:
-      - master
-    paths:
-      - 'game/**'
-
+      - main
 jobs:
   export_game:
     runs-on: ubuntu-latest
