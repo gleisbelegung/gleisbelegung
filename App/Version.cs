@@ -6,7 +6,7 @@ namespace Gleisbelegung.App
     {
         private const int Major = 0;
         private const int Minor = 1;
-        private const int Patch = 5;
+        private const int Patch = 6;
 
         public static string ToString()
         {
