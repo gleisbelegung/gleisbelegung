@@ -1,4 +1,3 @@
-using System;
 using Gleisbelegung.App.Common;
 using Gleisbelegung.App.Events;
 using Godot;
@@ -12,6 +11,6 @@ public class TimeLabel : Label, IEventListener<TimeUpdatedEvent>
 
     public void ProcessEvent(TimeUpdatedEvent eventData)
     {
-        Text = eventData.Time.ToString("HH:mm:ss") + " " + Engine.GetFramesPerSecond() + "FPS";
+        Text = eventData.Time.ToString("HH:mm:ss") + " " + Engine.GetFramesPerSecond() + "FPS " + Gleisbelegung.App.Version.ToString();
     }
 }

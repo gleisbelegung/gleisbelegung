@@ -39,5 +39,6 @@ jobs:
         relative_project_path: ./
         wine_path: ${{ steps.wine_install.outputs.WINE_PATH }}
         archive_single_release_output: false
+        generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

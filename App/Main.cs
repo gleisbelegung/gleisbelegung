@@ -1,6 +1,9 @@
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Gleisbelegung.App;
 using Gleisbelegung.App.Common;
 using Gleisbelegung.App.Events;
 using Gleisbelegung.App.STSConnect;
@@ -46,6 +49,5 @@ public class Main : Node, IEventListener<ConnectionStatusEvent>
         EventHub.Publish(new SendMessageEvent(new TrainListMessage()));
         EventHub.Publish(new SendMessageEvent(new FacilityPathMessage()));
         EventHub.Publish<SendMessageEvent>(new SendMessageEvent(TimeMessageProcessor.CreateTimeMessage()));
-
     }
 }

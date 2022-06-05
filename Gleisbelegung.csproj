@@ -5,7 +5,10 @@
     <RootNamespace>Gleisbelegung</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="DotNetZip" Version="1.16.0" />
+    <PackageReference Include="Octokit" Version="0.51.0" />
     <PackageReference Include="PubSub" Version="4.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Semver" Version="2.1.0" />
   </ItemGroup>
 </Project>
