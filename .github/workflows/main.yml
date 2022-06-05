@@ -25,6 +25,11 @@ jobs:
         sudo apt install wine64
         echo ::set-output name=WINE_PATH::$(which wine64)
 
+    - name: prepare android
+      run: |
+        echo "${{ secrets.ANDROID_RELEASE_KEYSTORE_ENCRYPTED }}" > Gleisbelegung.keystore.asc
+        gpg -d -passphrase "${{ secrets.ANDROID_RELEASE_KEYSTORE_PASSWORD }}" --batch Gleisbelegung.keystore.asc > Gleisbelegung.keystore
+
     - name: export
       uses: firebelley/godot-export@v3.0.0
       with:
