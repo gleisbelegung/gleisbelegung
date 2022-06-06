@@ -20,27 +20,25 @@ jobs:
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v2
-      
-    - name: install wine
-      id: wine_install
-      run: |
-        sudo apt install wine64
-        echo ::set-output name=WINE_PATH::$(which wine64)
 
-    # - name: prepare android
-    #   run: |
-    #     echo "${{ secrets.ANDROID_RELEASE_KEYSTORE_ENCRYPTED }}" > Gleisbelegung.keystore.asc
-    #     gpg -d -passphrase "${{ secrets.ANDROID_RELEASE_KEYSTORE_PASSWORD }}" --batch Gleisbelegung.keystore.asc > Gleisbelegung.keystore
-
-    - name: export
-      uses: firebelley/godot-export@v3.0.0
+    - name: Read version.txt
+      id: version
+      uses: juliangruber/read-file-action@v1
       with:
-        base_version: 0.1.0
-        godot_executable_download_url: https://github.com/godotengine/godot/releases/download/3.4.4-stable/Godot_v3.4.4-stable_mono_linux_headless_64.zip
-        godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/3.4.4-stable/Godot_v3.4.4-stable_mono_export_templates.tpz
-        relative_project_path: ./
-        wine_path: ${{ steps.wine_install.outputs.WINE_PATH }}
-        archive_single_release_output: false
-        generate_release_notes: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          path: ./version.txt
+      
+    - name: export godot
+      id: godot
+      uses: manuel3108/github-godot-export@main
+      with:
+          godot_version: 3.4.4-stable
+          use_mono: true
+          base_dir: ./
+
+    - name: create release
+      uses: ncipollo/release-action@v1
+      with:
+          artifacts: ${{ steps.godot.outputs.artifacts }}
+          generateReleaseNotes: true
+          tag: v${{ steps.version.outputs.content }}
+          token: ${{ secrets.GITHUB_TOKEN }}
