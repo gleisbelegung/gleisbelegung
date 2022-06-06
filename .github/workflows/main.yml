@@ -1,3 +1,5 @@
+name: Export game
+
 on:
   push:
     branches:
