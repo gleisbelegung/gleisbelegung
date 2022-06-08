@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://Scenes/common/TopMenu.tscn" type="PackedScene" id=1]
 [ext_resource path="res://App/Main.cs" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://App/Components/GleisbelegungTable.cs" type="Script" id=5]
 [ext_resource path="res://Themes/TableTheme.tres" type="Theme" id=6]
 [ext_resource path="res://Scenes/common/Version.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Scenes/STSConnector.tscn" type="PackedScene" id=8]
 
 [node name="Spatial" type="Node"]
 script = ExtResource( 2 )
@@ -37,3 +38,5 @@ follow_focus = true
 script = ExtResource( 5 )
 
 [node name="Version" parent="." instance=ExtResource( 7 )]
+
+[node name="STSConnector" parent="." instance=ExtResource( 8 )]

@@ -15,6 +15,7 @@ run/main_scene="res://Scenes/Main.tscn"
 run/low_processor_mode_sleep_usec=69000
 boot_splash/image="res://Resources/Gleisbelegung.png"
 config/icon="res://Resources/Gleisbelegung.png"
+config/windows_native_icon="res://Resources/Gleisbelegung.ico"
 
 [display]
 
