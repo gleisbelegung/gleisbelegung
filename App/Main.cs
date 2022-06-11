@@ -44,6 +44,6 @@ public class Main : Node, IEventListener<ConnectionStatusEvent>
         EventHub.Publish(new SendMessageEvent(new PlatformListMessage()));
         EventHub.Publish(new SendMessageEvent(new TrainListMessage()));
         EventHub.Publish(new SendMessageEvent(new FacilityPathMessage()));
-        EventHub.Publish<SendMessageEvent>(new SendMessageEvent(TimeMessageProcessor.CreateTimeMessage()));
+        EventHub.Publish(new SendMessageEvent(TimeMessageProcessor.CreateTimeMessage()));
     }
 }

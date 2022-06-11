@@ -89,8 +89,7 @@ namespace Gleisbelegung.App.STSConnect
                 {
                     while (true)
                     {
-                        await Task.Delay(1000);
-                        GD.Print("After pause");
+                        await Task.Delay(100);
                         ReadMessage();
                     }
                 });

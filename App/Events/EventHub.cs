@@ -18,10 +18,10 @@ namespace Gleisbelegung.App.Events
             {
                 var methodInfo = instanceType.GetMethod("ProcessEvent", new[] { t });
 
-                GD.Print($"{DateTime.Now.ToLogTime()} EventHub.RegisterSubscribe: {t.Name}");
+                // GD.Print($"{DateTime.Now.ToLogTime()} EventHub.RegisterSubscribe: {t.Name}");
                 Hub.Default.Subscribe(t, (data) =>
                 {
-                    GD.Print($"{DateTime.Now.ToLogTime()} EventHub.Subscribe: {data.GetType().Name}");
+                    // GD.Print($"{DateTime.Now.ToLogTime()} EventHub.Subscribe: {data.GetType().Name}");
                     methodInfo.Invoke(instance, new[] { data });
                 });
             }
@@ -29,7 +29,7 @@ namespace Gleisbelegung.App.Events
 
         public static void Publish<T>(T eventData)
         {
-            GD.Print($"{DateTime.Now.ToLogTime()} EventHub.Publish: {eventData.GetType().Name}");
+            // GD.Print($"{DateTime.Now.ToLogTime()} EventHub.Publish: {eventData.GetType().Name}");
             Hub.Default.Publish<T>(eventData);
         }
     }

@@ -9,8 +9,9 @@ using Godot;
 
 public class STSConnector : WindowDialog, IEventListener<ConnectionStatusEvent>
 {
-    public LineEdit _ipInput;
-    public Button _connectButton;
+    private LineEdit _ipInput;
+    private Button _connectButton;
+    private Label _statusLabel;
 
     public override void _Ready()
     {
@@ -22,9 +23,9 @@ public class STSConnector : WindowDialog, IEventListener<ConnectionStatusEvent>
     {
         base._EnterTree();
 
-
         _ipInput = GetNode<LineEdit>("VBoxContainer/IPInput");
         _connectButton = GetNode<Button>("VBoxContainer/ConnectButton");
+        _statusLabel = GetNode<Label>("StatusLabel");
 
         _connectButton.Connect("pressed", this, nameof(OnConnectButtonPressed));
 
@@ -33,12 +34,24 @@ public class STSConnector : WindowDialog, IEventListener<ConnectionStatusEvent>
 
     private void OnConnectButtonPressed()
     {
-        _connectButton.Text = "Waiting...";
+        var windowPosition = OS.WindowPosition;
+        var windowSize = OS.WindowSize;
+        GD.Print($"Window position: {windowPosition}");
+        GD.Print($"Window size: {windowSize}");
+
         _connectButton.Disabled = true;
 
         Task.Run(() =>
         {
-            new STSSocket(_ipInput.Text);
+            try
+            {
+                new STSSocket(_ipInput.Text);
+            }
+            catch (Exception e)
+            {
+                _statusLabel.Text = e.Message;
+                _connectButton.Disabled = false;
+            }
         });
     }
 
@@ -57,7 +70,7 @@ public class STSConnector : WindowDialog, IEventListener<ConnectionStatusEvent>
 
     public void ProcessEvent(ConnectionStatusEvent eventData)
     {
-        _connectButton.Text = eventData.ConnectionStatus.ToString();
+        _statusLabel.Text = eventData.ConnectionStatus.ToString();
 
         if (eventData.ConnectionStatus == ConnectionStatus.ESTABLISHED)
         {
