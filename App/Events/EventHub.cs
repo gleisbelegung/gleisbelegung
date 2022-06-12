@@ -11,17 +11,14 @@ namespace Gleisbelegung.App.Events
     {
         public static void RegisterSubscriptions(object instance)
         {
-            // var temp = (IEventListener<>)instance;
             var instanceType = instance.GetType();
             var types = ReflectionHelper.GetListOfGenericInterfaceTypes(instanceType, typeof(IEventListener<>));
             foreach (var t in types)
             {
                 var methodInfo = instanceType.GetMethod("ProcessEvent", new[] { t });
 
-                // GD.Print($"{DateTime.Now.ToLogTime()} EventHub.RegisterSubscribe: {t.Name}");
                 Hub.Default.Subscribe(t, (data) =>
                 {
-                    // GD.Print($"{DateTime.Now.ToLogTime()} EventHub.Subscribe: {data.GetType().Name}");
                     methodInfo.Invoke(instance, new[] { data });
                 });
             }
@@ -29,7 +26,6 @@ namespace Gleisbelegung.App.Events
 
         public static void Publish<T>(T eventData)
         {
-            // GD.Print($"{DateTime.Now.ToLogTime()} EventHub.Publish: {eventData.GetType().Name}");
             Hub.Default.Publish<T>(eventData);
         }
     }

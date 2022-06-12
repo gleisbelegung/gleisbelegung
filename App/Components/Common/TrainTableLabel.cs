@@ -3,6 +3,7 @@ using Fernandezja.ColorHashSharp;
 using Gleisbelegung.App.Common;
 using Gleisbelegung.App.Data;
 using Gleisbelegung.App.Events;
+using Gleisbelegung.App.Extensions;
 using Godot;
 
 namespace Gleisbelegung.App.Components.Common
@@ -28,9 +29,18 @@ namespace Gleisbelegung.App.Components.Common
                 return;
             }
 
-            if (_time >= eventData.TrainSchedule.Arrival && _time <= eventData.TrainSchedule.Departure)
+            var departure = eventData.Train.GetActualDeparture(eventData.TrainSchedule);
+            var arrival = eventData.Train.GetActualArrival(eventData.TrainSchedule);
+
+            if (departure == null || arrival == null)
             {
-                Text += eventData.Train.Name;
+                GD.Print("TrainTableLabel: departure or arrival is null");
+                return;
+            }
+
+            if (_time >= eventData.TrainSchedule.PlannedArrival && _time <= eventData.TrainSchedule.PlannedDeparture)
+            {
+                Text += $"{eventData.Train.Name}{eventData.Train.GetDelayAsString()}";
             }
 
             if (!string.IsNullOrEmpty(Text))

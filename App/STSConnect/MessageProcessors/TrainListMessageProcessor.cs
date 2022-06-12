@@ -44,6 +44,13 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
             var database = Database.GetInstance();
             if (!database.Trains.ContainsKey(trainData.Zid))
             {
+                if (trainData.Zid <= 0)
+                {
+                    // TODO: Ersatzloks have no Id and platform. So they destroy a lot of our assumptions.
+                    // That's why we ignore them for the moment.
+                    return;
+                }
+
                 var newTrain = new Train
                 {
                     Id = trainData.Zid,

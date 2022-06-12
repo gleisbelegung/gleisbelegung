@@ -119,7 +119,7 @@ namespace Gleisbelegung.App
         public static string GetCurrentVersion()
         {
             Godot.File versionFile = new Godot.File();
-            versionFile.Open("res://version.tres", Godot.File.ModeFlags.Read);
+            versionFile.Open("res://version.txt", Godot.File.ModeFlags.Read);
             var currentVersionString = versionFile.GetLine();
             versionFile.Close();
 

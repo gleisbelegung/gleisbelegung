@@ -11,7 +11,6 @@ public class GleisbelegungTable : HBoxContainer, IEventListener<ConnectionStatus
     public override void _Ready()
     {
         this.RegisterSubscriptions();
-        // AddConstantOverride("separation", 0);
     }
 
     public void ProcessEvent(ConnectionStatusEvent eventData)
