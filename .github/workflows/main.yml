@@ -29,18 +29,45 @@ jobs:
       with:
           path: ./version.txt
       
-    - name: export godot
-      id: godot
-      uses: manuel3108/github-godot-export@main
+    # - name: export godot
+    #   id: godot
+    #   uses: manuel3108/github-godot-export@main
+    #   with:
+    #       godot_version: 3.4.4-stable
+    #       use_mono: true
+    #       base_dir: ./
+
+    # - name: create release
+    #   uses: ncipollo/release-action@v1
+    #   with:
+    #       artifacts: ${{ steps.godot.outputs.artifacts }}
+    #       generateReleaseNotes: true
+    #       tag: v${{ steps.version.outputs.content }}
+    #       token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: export game
+      # Use latest version (see releases for all versions)
+      uses: firebelley/godot-export@v4.0.0
       with:
-          godot_version: 3.4.4-stable
-          use_mono: true
-          base_dir: ./
+        # Defining all the required inputs
+        # I used the mono version of Godot in this example
+        godot_executable_download_url: https://github.com/godotengine/godot/releases/download/3.4.4-stable/Godot_v3.4.4-stable_mono_linux_headless_64.zip
+        godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/3.4.4-stable/Godot_v3.4.4-stable_mono_export_templates.tpz
+        relative_project_path: ./
+        archive_output: true
+
+    # Note that "/home/runner/.local/share/godot/dist" is the directory containing exported files by default.
+    # This should be a glob path to the directory containing your exports. See the release action documentation for more information.
+    # OUTPUT_PATH is used in the "create release" step below
+    - name: Set Output Search Path
+      run: echo "OUTPUT_PATH=$HOME/.local/share/godot/dist/*" >> $GITHUB_ENV
 
     - name: create release
-      uses: ncipollo/release-action@v1
+      # This release action has worked well for me. However, you can most likely use any release action of your choosing.
+      # https://github.com/softprops/action-gh-release
+      uses: softprops/action-gh-release@v0.1.14
       with:
-          artifacts: ${{ steps.godot.outputs.artifacts }}
-          generateReleaseNotes: true
-          tag: v${{ steps.version.outputs.content }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
+        generate_release_notes: true
+        tag_name: ${{ steps.tag_version.outputs.TAG_VERSION }}
+        files: ${{ env.OUTPUT_PATH }}
