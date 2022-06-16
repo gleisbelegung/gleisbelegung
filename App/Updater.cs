@@ -22,7 +22,7 @@ namespace Gleisbelegung.App
         public static bool HasUpdateCapabilities()
         {
             var osName = OS.GetName();
-            return !OS.HasFeature("editor") && osName == "Windows" || osName == "OSX" || osName == "X11";
+            return !OS.HasFeature("editor") && (osName == "Windows" || osName == "OSX" || osName == "X11");
         }
 
         public static void UpdateApplication()
@@ -136,9 +136,6 @@ namespace Gleisbelegung.App
         {
             var executable = OS.GetExecutablePath();
             var directoryPath = System.IO.Path.GetDirectoryName(executable);
-
-            GD.Print(executable);
-            GD.Print(directoryPath);
 
             var updaterDirectoryPath = System.IO.Path.Combine(directoryPath, UpdaterFolderName);
             if (System.IO.Directory.Exists(updaterDirectoryPath))
