@@ -22,7 +22,7 @@ namespace Gleisbelegung.App
         public static bool HasUpdateCapabilities()
         {
             var osName = OS.GetName();
-            return !OS.HasFeature("editor") && osName == "Windows" || osName == "OSX" || osName == "X11";
+            return !OS.HasFeature("editor") && (osName == "Windows" || osName == "OSX" || osName == "X11");
         }
 
         public static void UpdateApplication()
