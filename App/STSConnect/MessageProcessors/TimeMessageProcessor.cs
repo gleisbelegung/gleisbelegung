@@ -29,7 +29,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
 
             if (isFirstUpdate)
             {
-                EventHub.Publish(new ConnectionStatusEvent(ConnectionStatus.ESTABLISHED));
+                EventHub.Publish(new ConnectionStatusEvent(ConnectionStatus.FETCHING_INITIAL_DATA));
                 isFirstUpdate = false;
 
                 var task = Task.Run(async () =>

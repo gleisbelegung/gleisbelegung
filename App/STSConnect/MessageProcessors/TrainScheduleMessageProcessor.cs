@@ -19,6 +19,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
         {
             var database = Database.Instance;
             var train = database.Trains[eventData.Message.Zid];
+            database.ReceivedTrainSchedules++;
 
             foreach (var gleis in eventData.Message.Gleise)
             {
@@ -36,6 +37,20 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
                 train.Schedule.Add(scheduleItem);
 
                 EventHub.Publish(new TrainScheduleChangedEvent(train, scheduleItem));
+            }
+
+            GD.Print(database.ReceivedTrainSchedules + " from " + database.Trains.Count);
+            if (database.ReceivedTrainSchedules == database.Trains.Count)
+            {
+                if (database.ConnectionsStatus == ConnectionStatus.REFETCHING_TRAIN_DETAILS)
+                {
+                    EventHub.Publish(new ConnectionStatusEvent(ConnectionStatus.ESTABLISHED));
+                }
+                else if (database.ConnectionsStatus == ConnectionStatus.FETCHING_INITIAL_DATA)
+                {
+                    // after the start we need to get the train list twice, in order to be able to successfully determine the successors
+                    EventHub.Publish(new ConnectionStatusEvent(ConnectionStatus.REFETCHING_TRAIN_DETAILS));
+                }
             }
         }
     }

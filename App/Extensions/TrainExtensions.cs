@@ -1,6 +1,5 @@
 using System;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Gleisbelegung.App.Common;
 using Gleisbelegung.App.Data;
 using Gleisbelegung.App.STSConnect.MessageProcessors;
@@ -19,7 +18,16 @@ namespace Gleisbelegung.App.Extensions
                 var successorFlag = trainSchedule.GetFlagByType(TrainScheduleFlagType.Successor);
                 if (successorFlag == null)
                 {
-                    return null;
+                    successorFlag = trainSchedule.GetFlagByType(TrainScheduleFlagType.Split);
+                    if (successorFlag == null)
+                    {
+                        successorFlag = trainSchedule.GetFlagByType(TrainScheduleFlagType.Join);
+
+                        if (successorFlag == null)
+                        {
+                            return null;
+                        }
+                    }
                 }
 
                 var successorTrain = Database.Instance.Trains[successorFlag.TrainId.Value];

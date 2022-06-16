@@ -15,7 +15,7 @@ public class GleisbelegungTable : HBoxContainer, IEventListener<ConnectionStatus
 
     public void ProcessEvent(ConnectionStatusEvent eventData)
     {
-        if (eventData.ConnectionStatus == ConnectionStatus.ESTABLISHED)
+        if (eventData.ConnectionStatus == ConnectionStatus.REFETCHING_TRAIN_DETAILS)
         {
             PopulateTable();
         }

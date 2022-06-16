@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using Gleisbelegung.App.Common;
 using Godot;
 using Ionic.Zip;
 using Octokit;
@@ -22,7 +23,7 @@ namespace Gleisbelegung.App
         public static bool HasUpdateCapabilities()
         {
             var osName = OS.GetName();
-            return !OS.HasFeature("editor") && (osName == "Windows" || osName == "OSX" || osName == "X11");
+            return !OS.HasFeature("editor") && ComputerPlatforms.IsDesktopPlatform(osName);
         }
 
         public static void UpdateApplication()
@@ -32,14 +33,13 @@ namespace Gleisbelegung.App
             var assets = latestRelease.Assets;
 
             var osName = OS.GetName();
-            // possible values are: "Android", "iOS", "HTML5", "OSX", "Server", "Windows", "UWP", "X11".
 
             ReleaseAsset asset = null;
-            if (osName == "OSX")
+            if (osName == ComputerPlatforms.MACOSX)
             {
                 asset = assets.FirstOrDefault(a => a.Name.Contains("Gleisbelegung.zip"));
             }
-            else if (osName == "X11")
+            else if (osName == ComputerPlatforms.LINUX)
             {
                 asset = assets.FirstOrDefault(a => a.Name.Contains("Linux.zip"));
             }

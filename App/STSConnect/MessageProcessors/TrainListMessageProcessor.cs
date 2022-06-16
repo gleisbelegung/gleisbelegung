@@ -22,6 +22,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
                 ProcessTrainData(trainData);
             }
 
+            Database.Instance.ReceivedTrainSchedules = 0;
             RequestTrainDetails();
         }
 
