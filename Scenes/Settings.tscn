@@ -2,7 +2,7 @@
 
 [ext_resource path="res://Themes/DefaultTheme.tres" type="Theme" id=1]
 [ext_resource path="res://App/Components/FontSize.cs" type="Script" id=2]
-[ext_resource path="res://App/Components/Settings.cs" type="Script" id=3]
+[ext_resource path="res://App/Components/SettingsController.cs" type="Script" id=3]
 
 [node name="Settings" type="AcceptDialog"]
 visible = true
@@ -24,15 +24,18 @@ margin_bottom = 257.0
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_right = 496.0
 margin_bottom = 39.0
+alignment = 1
 
 [node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
-anchor_right = 0.45
+margin_left = 173.0
+margin_top = 10.0
+margin_right = 235.0
+margin_bottom = 29.0
 text = "FontSize"
 align = 2
 
-[node name="FontSize" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
-anchor_left = 0.55
-anchor_right = 0.55
-caret_blink = true
-caret_blink_speed = 0.5
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/HBoxContainer"]
+margin_left = 239.0
+margin_right = 323.0
+margin_bottom = 39.0
 script = ExtResource( 2 )

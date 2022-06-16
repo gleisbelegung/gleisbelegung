@@ -27,8 +27,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
                 }
             }
 
-            var database = Database.GetInstance();
-            var train = database.Trains[data.Zid];
+            var train = Database.Instance.Trains[data.Zid];
 
             EventHub.Publish<TrainEvent>(new TrainEvent
             {

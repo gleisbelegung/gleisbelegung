@@ -17,7 +17,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
 
         public void ProcessEvent(IncomingMessageEvent<TrainScheduleMessage> eventData)
         {
-            var database = Database.GetInstance();
+            var database = Database.Instance;
             var train = database.Trains[eventData.Message.Zid];
 
             foreach (var gleis in eventData.Message.Gleise)

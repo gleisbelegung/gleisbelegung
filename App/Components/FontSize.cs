@@ -1,20 +1,20 @@
 using System;
+using Gleisbelegung.App.Common;
 using Gleisbelegung.App.Events;
 using Godot;
 
-public class FontSize : LineEdit
+public class FontSize : SpinBox
 {
     public override void _Ready()
     {
-        Connect("text_changed", this, nameof(TextChanged));
+        Value = Database.Instance.Settings.FontSize;
+        Connect("value_changed", this, nameof(ValueChanged));
     }
 
-    public void TextChanged(string newText)
+    public void ValueChanged(float inputValue)
     {
-        var parsed = int.Parse(newText);
-        EventHub.Publish(new FontSizeChangedEvent
-        {
-            NewFontSize = parsed,
-        });
+        Database.Instance.Settings.FontSize = (int)inputValue;
+
+        EventHub.Publish(new SettingsChangedEvent());
     }
 }

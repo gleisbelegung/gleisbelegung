@@ -24,7 +24,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
             var time = eventData.Message.Zeit + roundTime / 2;
 
             simTime = DateTime.Today.Add(TimeSpan.FromMilliseconds(time));
-            var database = Database.GetInstance();
+            var database = Database.Instance;
             database.Time = simTime;
 
             if (isFirstUpdate)

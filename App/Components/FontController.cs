@@ -3,7 +3,7 @@ using Gleisbelegung.App.Common;
 using Gleisbelegung.App.Events;
 using Godot;
 
-public class FontController : Control, IEventListener<FontSizeChangedEvent>
+public class FontController : Control, IEventListener<SettingsChangedEvent>
 {
     private readonly DynamicFont _font;
 
@@ -11,10 +11,13 @@ public class FontController : Control, IEventListener<FontSizeChangedEvent>
     {
         this.RegisterSubscriptions();
         _font = (DynamicFont)GetFont("font");
+
+        Database.Instance.Settings.FontSize = _font.Size;
+        EventHub.Publish(new SettingsChangedEvent());
     }
 
-    public void ProcessEvent(FontSizeChangedEvent eventData)
+    public void ProcessEvent(SettingsChangedEvent eventData)
     {
-        _font.Size = eventData.NewFontSize;
+        _font.Size = Database.Instance.Settings.FontSize;
     }
 }

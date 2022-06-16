@@ -22,8 +22,7 @@ namespace Gleisbelegung.App.Extensions
                     return null;
                 }
 
-                var database = Database.GetInstance();
-                var successorTrain = database.Trains[successorFlag.TrainId.Value];
+                var successorTrain = Database.Instance.Trains[successorFlag.TrainId.Value];
 
                 if (successorTrain == null)
                     return null;

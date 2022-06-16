@@ -23,7 +23,7 @@ public class GleisbelegungTable : HBoxContainer, IEventListener<ConnectionStatus
 
     private void PopulateTable()
     {
-        var database = Database.GetInstance();
+        var database = Database.Instance;
         var platforms = database.Platforms.Values;
 
         var timeColumn = new TableColumn();

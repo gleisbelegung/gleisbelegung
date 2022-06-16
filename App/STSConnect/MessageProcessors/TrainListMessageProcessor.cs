@@ -27,8 +27,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
 
         private void RequestTrainDetails()
         {
-            var database = Database.GetInstance();
-            var trains = database.Trains;
+            var trains = Database.Instance.Trains;
 
             foreach (var trainKeyValue in trains)
             {
@@ -41,7 +40,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
 
         private void ProcessTrainData(TrainListMessage.Train trainData)
         {
-            var database = Database.GetInstance();
+            var database = Database.Instance;
             if (!database.Trains.ContainsKey(trainData.Zid))
             {
                 if (trainData.Zid <= 0)
