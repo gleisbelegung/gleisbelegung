@@ -137,9 +137,6 @@ namespace Gleisbelegung.App
             var executable = OS.GetExecutablePath();
             var directoryPath = System.IO.Path.GetDirectoryName(executable);
 
-            GD.Print(executable);
-            GD.Print(directoryPath);
-
             var updaterDirectoryPath = System.IO.Path.Combine(directoryPath, UpdaterFolderName);
             if (System.IO.Directory.Exists(updaterDirectoryPath))
             {

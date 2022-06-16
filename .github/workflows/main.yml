@@ -28,22 +28,6 @@ jobs:
       uses: juliangruber/read-file-action@v1
       with:
           path: ./version.txt
-      
-    # - name: export godot
-    #   id: godot
-    #   uses: manuel3108/github-godot-export@main
-    #   with:
-    #       godot_version: 3.4.4-stable
-    #       use_mono: true
-    #       base_dir: ./
-
-    # - name: create release
-    #   uses: ncipollo/release-action@v1
-    #   with:
-    #       artifacts: ${{ steps.godot.outputs.artifacts }}
-    #       generateReleaseNotes: true
-    #       tag: v${{ steps.version.outputs.content }}
-    #       token: ${{ secrets.GITHUB_TOKEN }}
     
     - name: export game
       # Use latest version (see releases for all versions)
