@@ -69,5 +69,5 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         generate_release_notes: true
-        tag_name: ${{ steps.tag_version.outputs.TAG_VERSION }}
+        tag_name: v${{ steps.version.outputs.content }}
         files: ${{ env.OUTPUT_PATH }}
