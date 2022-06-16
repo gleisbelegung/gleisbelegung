@@ -15,7 +15,7 @@ public class GleisbelegungTable : HBoxContainer, IEventListener<ConnectionStatus
 
     public void ProcessEvent(ConnectionStatusEvent eventData)
     {
-        if (eventData.ConnectionStatus == ConnectionStatus.ESTABLISHED)
+        if (eventData.ConnectionStatus == ConnectionStatus.REFETCHING_TRAIN_DETAILS)
         {
             PopulateTable();
         }
@@ -23,7 +23,7 @@ public class GleisbelegungTable : HBoxContainer, IEventListener<ConnectionStatus
 
     private void PopulateTable()
     {
-        var database = Database.GetInstance();
+        var database = Database.Instance;
         var platforms = database.Platforms.Values;
 
         var timeColumn = new TableColumn();

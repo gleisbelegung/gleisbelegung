@@ -34,11 +34,11 @@ namespace Gleisbelegung.App.Components.Common
 
             if (departure == null || arrival == null)
             {
-                GD.Print("TrainTableLabel: departure or arrival is null");
+                GD.Print($"TrainTableLabel: {eventData.Train.Name} departure or arrival is null");
                 return;
             }
 
-            if (_time >= eventData.TrainSchedule.PlannedArrival && _time <= eventData.TrainSchedule.PlannedDeparture)
+            if (_time >= arrival && _time <= departure)
             {
                 Text += $"{eventData.Train.Name}{eventData.Train.GetDelayAsString()}";
             }

@@ -19,8 +19,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
 
         public void ProcessEvent(IncomingMessageEvent<PlatformListMessage> eventData)
         {
-            var database = Database.GetInstance();
-            var platforms = database.Platforms;
+            var platforms = Database.Instance.Platforms;
 
             // create platforms (if necessary)
             foreach (var platformData in eventData.Message.Bahnsteige)

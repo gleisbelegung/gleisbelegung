@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://Themes/DefaultTheme.tres" type="Theme" id=1]
 [ext_resource path="res://Resources/Gleisbelegung.png" type="Texture" id=2]
 [ext_resource path="res://App/Components/ConnectionStatusLabel.cs" type="Script" id=3]
 [ext_resource path="res://App/Components/TimeLabel.cs" type="Script" id=4]
 [ext_resource path="res://App/Components/EventLogOpener.cs" type="Script" id=5]
+[ext_resource path="res://App/Components/SettingsOpener.cs" type="Script" id=6]
 
 [node name="TopMenu" type="Panel"]
 anchor_right = 1.0
@@ -31,15 +32,15 @@ margin_right = 23.8
 margin_bottom = 26.0
 
 [node name="Label" type="Label" parent="Control/TopLeft"]
-margin_top = 6.0
-margin_right = 134.0
-margin_bottom = 20.0
+margin_top = 4.0
+margin_right = 149.0
+margin_bottom = 23.0
 text = "Plugin Gleisbelegung"
 
 [node name="Button" type="Button" parent="Control/TopLeft"]
-margin_left = 138.0
-margin_right = 177.0
-margin_bottom = 26.0
+margin_left = 153.0
+margin_right = 193.0
+margin_bottom = 27.0
 text = "test"
 
 [node name="TopCenter" type="HBoxContainer" parent="Control"]
@@ -49,17 +50,17 @@ margin_bottom = 26.0
 alignment = 1
 
 [node name="EventLogOpener" type="Button" parent="Control/TopCenter"]
-margin_left = 127.0
-margin_right = 202.0
-margin_bottom = 26.0
+margin_left = 122.0
+margin_right = 206.0
+margin_bottom = 27.0
 text = "Event Log"
 script = ExtResource( 5 )
 
 [node name="ConnectionStatus" type="Label" parent="Control/TopCenter"]
-margin_left = 206.0
-margin_top = 6.0
-margin_right = 206.0
-margin_bottom = 20.0
+margin_left = 210.0
+margin_top = 4.0
+margin_right = 210.0
+margin_bottom = 23.0
 script = ExtResource( 3 )
 
 [node name="TopRight" type="HBoxContainer" parent="Control"]
@@ -68,15 +69,16 @@ anchor_right = 1.0
 margin_bottom = 26.0
 alignment = 2
 
-[node name="Button" type="Button" parent="Control/TopRight"]
-margin_left = 300.0
+[node name="SettingsOpener" type="Button" parent="Control/TopRight"]
+margin_left = 267.0
 margin_right = 339.0
-margin_bottom = 26.0
-text = "test"
+margin_bottom = 27.0
+text = "Settings"
+script = ExtResource( 6 )
 
 [node name="TimeLabel" type="Label" parent="Control/TopRight"]
 margin_left = 343.0
-margin_top = 6.0
+margin_top = 4.0
 margin_right = 343.0
-margin_bottom = 20.0
+margin_bottom = 23.0
 script = ExtResource( 4 )

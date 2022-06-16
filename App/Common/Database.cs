@@ -6,10 +6,13 @@ namespace Gleisbelegung.App.Common
 {
     public class Database
     {
-        private static Database Instance { get; set; }
+        public ConnectionStatus ConnectionsStatus { get; set; }
+        private static Database _instance { get; set; }
         public Dictionary<int, Train> Trains { get; set; }
         public Dictionary<string, Platform> Platforms { get; set; }
         public DateTime Time { get; set; }
+        public Data.Settings Settings { get; set; } = Data.Settings.LoadSettings();
+        public int ReceivedTrainSchedules { get; set; }
 
         public Database()
         {
@@ -17,14 +20,17 @@ namespace Gleisbelegung.App.Common
             Platforms = new Dictionary<string, Platform>();
         }
 
-        public static Database GetInstance()
+        public static Database Instance
         {
-            if (Instance == null)
+            get
             {
-                Instance = new Database();
-            }
+                if (_instance == null)
+                {
+                    _instance = new Database();
+                }
 
-            return Instance;
+                return _instance;
+            }
         }
     }
 }

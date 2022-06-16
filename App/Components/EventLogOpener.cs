@@ -1,3 +1,4 @@
+using Gleisbelegung.App.Extensions;
 using Godot;
 
 public class EventLogOpener : Button
@@ -6,7 +7,7 @@ public class EventLogOpener : Button
 
     public override void _Ready()
     {
-        _eventLog = GetTree().Root.GetNode("Spatial").GetNode<WindowDialog>("EventLog");
+        _eventLog = this.GetRoot().GetNode<WindowDialog>("EventLog");
     }
 
     public override void _Pressed()

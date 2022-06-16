@@ -8,6 +8,7 @@ namespace Gleisbelegung.App.Events
 
         public ConnectionStatusEvent(ConnectionStatus connectionStatus)
         {
+            Database.Instance.ConnectionsStatus = connectionStatus;
             ConnectionStatus = connectionStatus;
         }
     }

@@ -46,11 +46,17 @@ namespace Gleisbelegung.App.STSConnect.Common
                     if (flagType == FlagParserType.CanBeSpawnedHere
                         || flagType == FlagParserType.LocomotiveChange)
                     {
-                        i = GetNextOccurrence(flagArray, i, ']');
+                        var newI = GetNextOccurrence(flagArray, i, ']');
 
                         if (flagType == FlagParserType.LocomotiveChange)
                         {
-                            i = GetNextOccurrence(flagArray, i, ']');
+                            newI = GetNextOccurrence(flagArray, newI, ']');
+                        }
+
+                        // sometimes a P tag has braces, sometimes not. This fixes the behavior.
+                        if (newI > 0)
+                        {
+                            i = newI;
                         }
                     }
 

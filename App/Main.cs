@@ -1,12 +1,6 @@
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using Gleisbelegung.App;
 using Gleisbelegung.App.Common;
 using Gleisbelegung.App.Events;
-using Gleisbelegung.App.STSConnect;
 using Gleisbelegung.App.STSConnect.MessageProcessors;
 using Gleisbelegung.App.STSConnect.Messages;
 using Godot;
@@ -19,6 +13,12 @@ public class Main : Node, IEventListener<ConnectionStatusEvent>
 
         // auto initialize all message processors
         ReflectionHelper.CreateInstancesByInterface<IMessageProcessor>();
+
+        if (ComputerPlatforms.IsDesktopPlatform(OS.GetName()))
+        {
+            OS.LowProcessorUsageMode = true;
+            OS.LowProcessorUsageModeSleepUsec = GleisbelegungDefaults.TargetFPSDuringLowProcessorMode;
+        }
     }
 
     public override void _Notification(int what)
@@ -31,10 +31,23 @@ public class Main : Node, IEventListener<ConnectionStatusEvent>
 
     public void ProcessEvent(ConnectionStatusEvent eventData)
     {
-        if (eventData.ConnectionStatus == ConnectionStatus.REGISTERED)
+        switch (eventData.ConnectionStatus)
         {
-            StartFetchingData();
+            case ConnectionStatus.REGISTERED:
+                StartFetchingData();
+                break;
+            case ConnectionStatus.REFETCHING_TRAIN_DETAILS:
+                RefetchTrainDetails();
+                break;
+
+            default:
+                break;
         }
+    }
+
+    private void RefetchTrainDetails()
+    {
+        EventHub.Publish(new SendMessageEvent(new TrainListMessage()));
     }
 
     private void StartFetchingData()
