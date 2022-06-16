@@ -1,0 +1,38 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Themes/DefaultTheme.tres" type="Theme" id=1]
+[ext_resource path="res://App/Components/FontSize.cs" type="Script" id=2]
+[ext_resource path="res://App/Components/Settings.cs" type="Script" id=3]
+
+[node name="Settings" type="AcceptDialog"]
+visible = true
+anchor_left = 0.25
+anchor_top = 0.25
+anchor_right = 0.75
+anchor_bottom = 0.75
+theme = ExtResource( 1 )
+popup_exclusive = true
+window_title = "Settings"
+script = ExtResource( 3 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 504.0
+margin_bottom = 257.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+margin_right = 496.0
+margin_bottom = 39.0
+
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer"]
+anchor_right = 0.45
+text = "FontSize"
+align = 2
+
+[node name="FontSize" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
+anchor_left = 0.55
+anchor_right = 0.55
+caret_blink = true
+caret_blink_speed = 0.5
+script = ExtResource( 2 )
