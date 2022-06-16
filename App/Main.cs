@@ -13,16 +13,12 @@ using Godot;
 
 public class Main : Node, IEventListener<ConnectionStatusEvent>
 {
-    private STSSocket stsSocket;
-
     public override void _Ready()
     {
         this.RegisterSubscriptions();
 
         // auto initialize all message processors
         ReflectionHelper.CreateInstancesByInterface<IMessageProcessor>();
-
-        stsSocket = new STSSocket();
     }
 
     public override void _Notification(int what)
@@ -48,6 +44,6 @@ public class Main : Node, IEventListener<ConnectionStatusEvent>
         EventHub.Publish(new SendMessageEvent(new PlatformListMessage()));
         EventHub.Publish(new SendMessageEvent(new TrainListMessage()));
         EventHub.Publish(new SendMessageEvent(new FacilityPathMessage()));
-        EventHub.Publish<SendMessageEvent>(new SendMessageEvent(TimeMessageProcessor.CreateTimeMessage()));
+        EventHub.Publish(new SendMessageEvent(TimeMessageProcessor.CreateTimeMessage()));
     }
 }

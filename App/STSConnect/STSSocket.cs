@@ -39,14 +39,14 @@ namespace Gleisbelegung.App.STSConnect
             }
         }
 
-        public STSSocket()
+        public STSSocket(string ipAddress)
         {
             incomingMessagesMapper = new Dictionary<string, IIncomingMessageWrapper>();
 
             this.RegisterSubscriptions();
             RegisterMessageMappingData();
 
-            socket = StartClientAsync();
+            socket = StartClientAsync(ipAddress);
             DoWhatever();
         }
 
@@ -64,11 +64,11 @@ namespace Gleisbelegung.App.STSConnect
             }
         }
 
-        private Socket StartClientAsync()
+        private Socket StartClientAsync(string ipAddressString)
         {
             EventHub.Publish(new ConnectionStatusEvent(ConnectionStatus.CONNECTING));
 
-            IPHostEntry host = Dns.GetHostEntry("localhost");
+            IPHostEntry host = Dns.GetHostEntry(ipAddressString);
             IPAddress ipAddress = host.AddressList[0];
             IPEndPoint remoteEndpoint = new IPEndPoint(ipAddress, STS_PORT);
 
@@ -89,8 +89,7 @@ namespace Gleisbelegung.App.STSConnect
                 {
                     while (true)
                     {
-                        await Task.Delay(1000);
-                        GD.Print("After pause");
+                        await Task.Delay(100);
                         ReadMessage();
                     }
                 });

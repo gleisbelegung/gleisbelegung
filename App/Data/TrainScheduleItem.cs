@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using Gleisbelegung.App.Data;
 
 namespace Gleisbelegung.App.STSConnect.MessageProcessors
@@ -6,8 +8,8 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
     {
         public Platform ActualPlatform { get; set; }
         public Platform PlannedPlatform { get; set; }
-        public string Flags { get; set; }
-        public string Departure { get; set; }
-        public string Arrival { get; set; }
+        public List<TrainScheduleFlag> Flags { get; set; }
+        public TimeSpan? PlannedDeparture { get; set; }
+        public TimeSpan? PlannedArrival { get; set; }
     }
 }

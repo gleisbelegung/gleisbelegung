@@ -1,3 +1,4 @@
+using System;
 using Gleisbelegung.App.Common;
 using Gleisbelegung.App.Events;
 using Gleisbelegung.App.STSConnect.Messages;
@@ -18,7 +19,7 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
             var platforms = database.Platforms;
 
             var data = eventData.Message;
-            train.Delay = data.Verspaetung;
+            train.Delay = TimeSpan.FromMinutes(data.Verspaetung);
             train.Platform = platforms[data.Gleis];
             train.PlannedPlatform = platforms[data.Plangleis];
             train.AtPlatform = data.Amgleis;

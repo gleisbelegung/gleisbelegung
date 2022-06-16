@@ -60,7 +60,7 @@ namespace Gleisbelegung.App
                 DownloadFileTaskAsync(webClient, new Uri(downloadUrl), DownloadedApplicationFileName);
 
             }
-            catch (System.Exception e)
+            catch (System.Exception)
             {
                 GD.Print("Download failed");
             }
@@ -108,12 +108,22 @@ namespace Gleisbelegung.App
         {
             var newestRelease = GetLatestRelease();
             var newestVersionString = newestRelease.TagName.Replace("v", string.Empty);
-            var currentVersionString = Version.ToString();
+            var currentVersionString = Updater.GetCurrentVersion();
 
             var newestVersion = SemVersion.Parse(newestVersionString, SemVersionStyles.Strict);
             var currentVersion = SemVersion.Parse(currentVersionString, SemVersionStyles.Strict);
 
             return newestVersion > currentVersion;
+        }
+
+        public static string GetCurrentVersion()
+        {
+            Godot.File versionFile = new Godot.File();
+            versionFile.Open("res://version.txt", Godot.File.ModeFlags.Read);
+            var currentVersionString = versionFile.GetLine();
+            versionFile.Close();
+
+            return currentVersionString;
         }
 
         public static string GetChangelogAsText()

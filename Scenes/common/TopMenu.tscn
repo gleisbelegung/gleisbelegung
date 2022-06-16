@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=6 format=2]
 
 [ext_resource path="res://Themes/DefaultTheme.tres" type="Theme" id=1]
 [ext_resource path="res://Resources/Gleisbelegung.png" type="Texture" id=2]
 [ext_resource path="res://App/Components/ConnectionStatusLabel.cs" type="Script" id=3]
 [ext_resource path="res://App/Components/TimeLabel.cs" type="Script" id=4]
+[ext_resource path="res://App/Components/EventLogOpener.cs" type="Script" id=5]
 
 [node name="TopMenu" type="Panel"]
 anchor_right = 1.0
@@ -47,16 +48,17 @@ anchor_right = 0.66
 margin_bottom = 26.0
 alignment = 1
 
-[node name="Button" type="Button" parent="Control/TopCenter"]
-margin_left = 145.0
-margin_right = 184.0
+[node name="EventLogOpener" type="Button" parent="Control/TopCenter"]
+margin_left = 127.0
+margin_right = 202.0
 margin_bottom = 26.0
-text = "test"
+text = "Event Log"
+script = ExtResource( 5 )
 
 [node name="ConnectionStatus" type="Label" parent="Control/TopCenter"]
-margin_left = 188.0
+margin_left = 206.0
 margin_top = 6.0
-margin_right = 188.0
+margin_right = 206.0
 margin_bottom = 20.0
 script = ExtResource( 3 )
 
