@@ -6,7 +6,7 @@ using Godot;
 
 public class GleisbelegungTable : HBoxContainer, IEventListener<ConnectionStatusEvent>
 {
-    private const int MinutesInAdvance = 60;
+    private const int MinutesInAdvance = 180;
 
     public override void _Ready()
     {

@@ -39,7 +39,6 @@ namespace Gleisbelegung.App.STSConnect.MessageProcessors
                 EventHub.Publish(new TrainScheduleChangedEvent(train, scheduleItem));
             }
 
-            GD.Print(database.ReceivedTrainSchedules + " from " + database.Trains.Count);
             if (database.ReceivedTrainSchedules == database.Trains.Count)
             {
                 if (database.ConnectionsStatus == ConnectionStatus.REFETCHING_TRAIN_DETAILS)

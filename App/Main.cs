@@ -16,8 +16,8 @@ public class Main : Node, IEventListener<ConnectionStatusEvent>
 
         if (ComputerPlatforms.IsDesktopPlatform(OS.GetName()))
         {
-            OS.LowProcessorUsageMode = true;
-            OS.LowProcessorUsageModeSleepUsec = GleisbelegungDefaults.TargetFPSDuringLowProcessorMode;
+            // OS.LowProcessorUsageMode = true;
+            // OS.LowProcessorUsageModeSleepUsec = GleisbelegungDefaults.TargetFPSDuringLowProcessorMode;
         }
     }
 

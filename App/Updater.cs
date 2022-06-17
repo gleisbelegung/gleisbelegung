@@ -106,14 +106,22 @@ namespace Gleisbelegung.App
 
         public static bool NeedsUpdate()
         {
-            var newestRelease = GetLatestRelease();
-            var newestVersionString = newestRelease.TagName.Replace("v", string.Empty);
-            var currentVersionString = Updater.GetCurrentVersion();
+            try
+            {
+                var newestRelease = GetLatestRelease();
+                var newestVersionString = newestRelease.TagName.Replace("v", string.Empty);
+                var currentVersionString = Updater.GetCurrentVersion();
 
-            var newestVersion = SemVersion.Parse(newestVersionString, SemVersionStyles.Strict);
-            var currentVersion = SemVersion.Parse(currentVersionString, SemVersionStyles.Strict);
+                var newestVersion = SemVersion.Parse(newestVersionString, SemVersionStyles.Strict);
+                var currentVersion = SemVersion.Parse(currentVersionString, SemVersionStyles.Strict);
 
-            return newestVersion > currentVersion;
+                return newestVersion > currentVersion;
+            }
+            catch (Exception e)
+            {
+                GD.Print("Failed checking for update: " + e.Message + e.StackTrace);
+                return false;
+            }
         }
 
         public static string GetCurrentVersion()
@@ -165,7 +173,7 @@ namespace Gleisbelegung.App
 
         private static Release GetLatestRelease()
         {
-            // todo: this is pad. Might not be necessary with godot 4.0
+            // todo: this is bad. Might not be necessary with godot 4.0
             ServicePointManager
                 .ServerCertificateValidationCallback +=
                 (sender, cert, chain, sslPolicyErrors) => true;

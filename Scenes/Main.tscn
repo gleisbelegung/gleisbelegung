@@ -45,3 +45,4 @@ visible = false
 [node name="STSConnector" parent="." instance=ExtResource( 8 )]
 
 [node name="Settings" parent="." instance=ExtResource( 10 )]
+visible = false

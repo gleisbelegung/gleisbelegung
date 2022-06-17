@@ -103,16 +103,16 @@ namespace Gleisbelegung.App.STSConnect
 
         private void ReadMessage()
         {
+
+            if (socket.Available == 0)
+                return;
+
+            byte[] bytes = new byte[socket.Available];
+            int bytesRec = socket.Receive(bytes);
+            var data = Encoding.UTF8.GetString(bytes, 0, bytesRec);
+
             try
             {
-                if (socket.Available == 0)
-                    return;
-
-                byte[] bytes = new byte[socket.Available];
-                int bytesRec = socket.Receive(bytes);
-                var data = Encoding.UTF8.GetString(bytes, 0, bytesRec);
-
-
                 var perLine = data.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries);
                 var currentMessage = string.Empty;
                 var count = 0;
@@ -135,7 +135,7 @@ namespace Gleisbelegung.App.STSConnect
             }
             catch (System.Exception e)
             {
-                GD.Print(e.ToString());
+                GD.Print(data + e.ToString());
             }
         }
 
