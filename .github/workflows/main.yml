@@ -30,6 +30,7 @@ jobs:
           path: ./version.txt
     
     - name: export game
+     id: export
       # Use latest version (see releases for all versions)
       uses: firebelley/godot-export@update-4
       with:
@@ -40,12 +41,6 @@ jobs:
         relative_project_path: ./
         archive_output: true
 
-    # Note that "/home/runner/.local/share/godot/dist" is the directory containing exported files by default.
-    # This should be a glob path to the directory containing your exports. See the release action documentation for more information.
-    # OUTPUT_PATH is used in the "create release" step below
-    - name: Set Output Search Path
-      run: echo "OUTPUT_PATH=$HOME/.local/share/godot/dist/*" >> $GITHUB_ENV
-
     - name: create release
       # This release action has worked well for me. However, you can most likely use any release action of your choosing.
       # https://github.com/softprops/action-gh-release
@@ -54,4 +49,4 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         generate_release_notes: true
         tag_name: v${{ steps.version.outputs.content }}
-        files: ${{ env.OUTPUT_PATH }}
+        files: ${{ steps.export.outputs.archive_directory }}/*
