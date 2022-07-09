@@ -30,7 +30,7 @@ jobs:
           path: ./version.txt
     
     - name: export game
-     id: export
+      id: export
       # Use latest version (see releases for all versions)
       uses: firebelley/godot-export@update-4
       with:
