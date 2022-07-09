@@ -22,6 +22,12 @@ jobs:
 
     - name: Setup Android SDK
       uses: android-actions/setup-android@v2
+      
+    - name: install wine
+      id: wine_install
+      run: |
+        sudo apt install wine64
+        echo ::set-output name=WINE_PATH::$(which wine64)
 
     - name: Read version.txt
       id: version
@@ -40,6 +46,7 @@ jobs:
         godot_export_templates_download_url: https://github.com/godotengine/godot/releases/download/3.4.4-stable/Godot_v3.4.4-stable_mono_export_templates.tpz
         relative_project_path: ./
         archive_output: true
+        wine_path: ${{ steps.wine_install.outputs.WINE_PATH }}
 
     - name: create release
       # This release action has worked well for me. However, you can most likely use any release action of your choosing.
